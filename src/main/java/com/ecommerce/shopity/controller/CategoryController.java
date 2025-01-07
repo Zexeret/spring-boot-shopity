@@ -1,11 +1,14 @@
 package com.ecommerce.shopity.controller;
 
+import com.ecommerce.shopity.config.AppConstants;
 import com.ecommerce.shopity.model.Category;
+import com.ecommerce.shopity.payload.CategoryDTO;
+import com.ecommerce.shopity.payload.CategoryResponse;
 import com.ecommerce.shopity.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,40 +22,38 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/public/categories")
-    public ResponseEntity<List<Category>> getCategories() {
+    @GetMapping("/public/allcategories")
+    public ResponseEntity<List<Category>> getAllCategories() {
         return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
     }
 
+    @GetMapping("/public/categories")
+    public ResponseEntity<CategoryResponse> getPaginatedCategories(
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER , required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE , required = false) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORY_BY , required = false) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_CATEGORY_DIR , required = false) String sortOrder
+    ) {
+        CategoryResponse categoryResponse = categoryService.getPaginatedCategories(pageNumber,pageSize,sortBy,sortOrder);
+        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
+    }
+
     @PostMapping("/public/categories")
-    public ResponseEntity<String> addCategory(@RequestBody Category category) {
-        categoryService.addCategory(category);
-        return new ResponseEntity<>("Category Added Successfully: " + category.getCategoryName(), HttpStatus.CREATED);
+    public ResponseEntity<CategoryDTO> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO responseDTO =  categoryService.addCategory(categoryDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/public/categories/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
-
-        try {
-            String status = categoryService.deleteCategory(id);
-
-            // return new ResponseEntity<>(status, HttpStatus.OK) ;
-            return ResponseEntity.ok(status);
-            //return ResponseEntity.status(HttpStatus.OK).body(status);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
-
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long id) {
+        CategoryDTO responseDTO = categoryService.deleteCategory(id);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK) ;
     }
 
     @PutMapping("/public/categories/{id}")
-    public ResponseEntity<String> updateCategory(@RequestBody Category category, @PathVariable Long id) {
-        try {
-            String status = categoryService.updateCategory(category, id);
-            return ResponseEntity.ok(status);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+    public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO category, @PathVariable Long id) {
+        CategoryDTO categoryDTO = categoryService.updateCategory(category, id);
+        return ResponseEntity.ok(categoryDTO);
     }
 }
 

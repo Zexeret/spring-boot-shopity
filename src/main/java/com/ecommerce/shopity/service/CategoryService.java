@@ -1,14 +1,19 @@
 package com.ecommerce.shopity.service;
 
 import com.ecommerce.shopity.model.Category;
+import com.ecommerce.shopity.payload.CategoryDTO;
+import com.ecommerce.shopity.payload.CategoryResponse;
 
 import java.util.List;
 
 public interface CategoryService {
     List<Category> getAllCategories();
-    void addCategory(Category category);
 
-    String deleteCategory(Long id);
+    CategoryResponse getPaginatedCategories(Integer pageNumber, Integer pageSize,String sortBy, String sortOrder) ;
 
-    String updateCategory(Category category,Long id);
+    CategoryDTO addCategory(CategoryDTO categoryDTO);
+
+    CategoryDTO deleteCategory(Long id);
+
+    CategoryDTO updateCategory(CategoryDTO categoryDTO,Long id);
 }
