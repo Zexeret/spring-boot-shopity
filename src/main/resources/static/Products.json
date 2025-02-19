@@ -1,0 +1,18 @@
+[
+  {
+    "description": "Empty as hell",
+    "productName": "Lays",
+    "image": null,
+    "quantity": 10,
+    "price": 50.0,
+    "discount": 5.0
+  },
+  {
+    "description": "Shit as hell",
+    "productName": "kurkure",
+    "image": null,
+    "quantity": 93,
+    "price": 100.0,
+    "discount": 10.0
+  }
+]

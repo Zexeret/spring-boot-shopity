@@ -6,27 +6,26 @@ import com.ecommerce.shopity.model.Category;
 import com.ecommerce.shopity.payload.CategoryDTO;
 import com.ecommerce.shopity.payload.CategoryResponse;
 import com.ecommerce.shopity.repositories.CategoryRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
-    private final ModelMapper modelMapper;
-
-    public CategoryServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper) {
-        this.categoryRepository = categoryRepository;
-        this.modelMapper = modelMapper;
-    }
+    private final ObjectMapper modelMapper;
 
 
     public List<Category> getAllCategories() {
@@ -107,10 +106,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private CategoryDTO mapToDTO(Category category) {
-        return modelMapper.map(category, CategoryDTO.class);
+        return modelMapper.convertValue(category, CategoryDTO.class);
     }
     private Category mapToEntity(CategoryDTO categoryDTO) {
-        return modelMapper.map(categoryDTO, Category.class);
+        return modelMapper.convertValue(categoryDTO, Category.class);
     }
 }
 
