@@ -1,6 +1,5 @@
 package com.ecommerce.shopity.service;
 
-import com.ecommerce.shopity.model.Product;
 import com.ecommerce.shopity.payload.ProductDTO;
 import com.ecommerce.shopity.payload.ProductResponse;
 import org.springframework.web.multipart.MultipartFile;

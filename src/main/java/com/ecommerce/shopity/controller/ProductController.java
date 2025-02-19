@@ -1,6 +1,5 @@
 package com.ecommerce.shopity.controller;
 
-import com.ecommerce.shopity.model.Product;
 import com.ecommerce.shopity.payload.ProductDTO;
 import com.ecommerce.shopity.payload.ProductResponse;
 import com.ecommerce.shopity.service.ProductService;
@@ -26,7 +25,7 @@ public class ProductController {
     @PostMapping("/admin/categories/{categoryId}/product")
     public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO product,
                                                  @PathVariable Long categoryId) {
-        ProductDTO productDTO = productService.addProduct(product,categoryId);
+        ProductDTO productDTO = productService.addProduct(product, categoryId);
         return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
     }
 
@@ -44,26 +43,27 @@ public class ProductController {
 
     @PutMapping("/public/product/{productId}")
     public ResponseEntity<ProductDTO> updateProductById(@RequestBody ProductDTO product, @PathVariable Long productId) {
-        ProductDTO productDTO = productService.updateProductById(product,productId);
+        ProductDTO productDTO = productService.updateProductById(product, productId);
         return new ResponseEntity<>(productDTO, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/public/product/{productId}")
     public ResponseEntity<String> deleteProductById(@PathVariable Long productId) {
         productService.deleteProductById(productId);
-        return new ResponseEntity<>("Product deleted with id: "  + productId,HttpStatus.OK);
+        return new ResponseEntity<>("Product deleted with id: " + productId, HttpStatus.OK);
     }
 
     @PutMapping("/product/{productId}/image")
     public ResponseEntity<String> udpateProductImage(@PathVariable Long productId,
                                                      @RequestParam("Image") MultipartFile image) {
 
-        if(image.isEmpty()) {
+        if (image.isEmpty()) {
             return new ResponseEntity<>("Image is empty", HttpStatus.BAD_REQUEST);
         }
 
+
         productService.udpateProductImage(productId, image);
-        return new ResponseEntity<>("Image uploaded to product with id: "  + productId,HttpStatus.OK);
+        return new ResponseEntity<>("Image uploaded to product with id: " + productId, HttpStatus.OK);
     }
 
 

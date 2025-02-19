@@ -7,15 +7,16 @@ import com.ecommerce.shopity.payload.ProductDTO;
 import com.ecommerce.shopity.payload.ProductResponse;
 import com.ecommerce.shopity.repositories.CategoryRepository;
 import com.ecommerce.shopity.repositories.ProductRepository;
+import com.ecommerce.shopity.utils.FileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -32,10 +33,10 @@ public class ProductServiceImpl implements ProductService {
 
         Product freshProduct = convertDtoToClass(product);
 
-        freshProduct.setSpecialPrice(product.getPrice() - (product.getDiscount()/100)* product.getPrice());
+        freshProduct.setSpecialPrice(product.getPrice() - (product.getDiscount() / 100) * product.getPrice());
         freshProduct.setCategory(category);
 
-       return mapToDto(productRepository.save(freshProduct));
+        return mapToDto(productRepository.save(freshProduct));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
 
-        List<Product> products = productRepository.findByCategory(category) ;
+        List<Product> products = productRepository.findByCategory(category);
 
         List<ProductDTO> productDTOS = products.stream().map(this::mapToDto).toList();
 
@@ -62,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getProductByKeyword(String keyword) {
 
-        List<Product> products = productRepository.findByProductNameContainingIgnoreCase(keyword) ;
+        List<Product> products = productRepository.findByProductNameContainingIgnoreCase(keyword);
 
         List<ProductDTO> productDTOS = products.stream().map(this::mapToDto).toList();
 
@@ -71,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO updateProductById(ProductDTO product, Long productId) {
-        Optional<Product> existingProduct = productRepository.findById(productId) ;
+        Optional<Product> existingProduct = productRepository.findById(productId);
         if (existingProduct.isEmpty()) {
             throw new ResourceNotFoundException("Product", "id", productId);
         }
@@ -94,9 +95,15 @@ public class ProductServiceImpl implements ProductService {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        // Upload image to server
+        // Get filename
+        String path = "images/products";
+        String originalFilename = image.getOriginalFilename();
+        String filename = ("productImage_id" + productId).concat(Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf(".")));
+        FileService.uploadImage(path, image, filename);
 
-
+        //Updating the new file name to product
+        existingProduct.setImage(filename);
+        productRepository.save(existingProduct);
 
     }
 
