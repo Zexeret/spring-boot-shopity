@@ -1,14 +1,13 @@
 package com.ecommerce.shopity.payload;
 
-import com.ecommerce.shopity.model.Category;
-import com.ecommerce.shopity.model.Product;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -19,11 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ProductDTO {
 
     private Long productId;
-    private String description;
+    @NotBlank(message = "Product Name cannot be empty")
+    @Size(min = 3, message = "Product Name should be longer than 3 characters")
     private String productName;
+    private String description;
     private String image;
+
+    @NotNull(message = "Quantity cannot be empty")
     private Integer quantity;
-    private double price;
+
+    @NotNull(message = "Price cannot be empty")
+    private Double price;
     private double discount;
 
 }

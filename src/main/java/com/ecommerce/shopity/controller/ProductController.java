@@ -3,6 +3,7 @@ package com.ecommerce.shopity.controller;
 import com.ecommerce.shopity.payload.ProductDTO;
 import com.ecommerce.shopity.payload.ProductResponse;
 import com.ecommerce.shopity.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/categories/{categoryId}/product")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO product,
+    public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO product,
                                                  @PathVariable Long categoryId) {
         ProductDTO productDTO = productService.addProduct(product, categoryId);
         return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
@@ -42,7 +43,7 @@ public class ProductController {
     }
 
     @PutMapping("/public/product/{productId}")
-    public ResponseEntity<ProductDTO> updateProductById(@RequestBody ProductDTO product, @PathVariable Long productId) {
+    public ResponseEntity<ProductDTO> updateProductById(@Valid @RequestBody ProductDTO product, @PathVariable Long productId) {
         ProductDTO productDTO = productService.updateProductById(product, productId);
         return new ResponseEntity<>(productDTO, HttpStatus.ACCEPTED);
     }
