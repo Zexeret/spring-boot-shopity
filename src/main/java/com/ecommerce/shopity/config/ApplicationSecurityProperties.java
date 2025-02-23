@@ -14,4 +14,5 @@ public class ApplicationSecurityProperties {
 
     private Integer jwtExpirationMs;
     private String jwtSecret;
+    private String jwtCookieName;
 }
